@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_list/models/todo_list.dart';
+import 'package:todo_list/views/todo_widget.dart';
 
 void main() {
-  runApp(const ToDoApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => TodoList(),
+    child: const ToDoApp(),
+  ));
 }
 
 class ToDoApp extends StatelessWidget {
@@ -28,6 +34,22 @@ class _ToDoHomePageState extends State<ToDoHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actionsIconTheme: IconThemeData(
+          color: Colors.white,
+        ),
+        actions: [
+          Consumer<TodoList>(builder: (context, model, child) {
+            return Text(
+              'Not completed: ${model.todos.where((t) => t.complete == false).length}',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            );
+          }),
+          SizedBox(width: 10),
+          Icon(Icons.menu),
+          SizedBox(width: 10)
+        ],
         backgroundColor: Colors.blueAccent,
         title: Text(
           "To-Do App",
@@ -36,6 +58,16 @@ class _ToDoHomePageState extends State<ToDoHomePage> {
             fontWeight: FontWeight.bold,
           ),
         ),
+      ),
+      body: Center(
+        child: Consumer<TodoList>(builder: (context, model, child) {
+          return ListView.builder(
+            itemCount: model.todoCount,
+            itemBuilder: (context, index) {
+              return TodoWidget(todo: model.todos[index]);
+            },
+          );
+        }),
       ),
     );
   }
