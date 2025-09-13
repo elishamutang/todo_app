@@ -38,6 +38,7 @@ class _ToDoHomePageState extends State<ToDoHomePage> {
           color: Colors.white,
         ),
         actions: [
+          // Consumer widget listens for UI updates, in this case the change in number of incomplete todos.
           Consumer<TodoList>(builder: (context, model, child) {
             return Text(
               'Not completed: ${model.todos.where((t) => t.complete == false).length}',

@@ -28,7 +28,7 @@ class _TodoWidgetState extends State<TodoWidget> {
                   setState(() {
                     widget.todo.complete = value!;
                   });
-                  Provider.of<TodoList>(context, listen: false).updateTodo(widget.todo);
+                  Provider.of<TodoList>(context, listen: false).updateTodo(widget.todo); // Updates shared TodoList model.
                 })
             ],
           ),

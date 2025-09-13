@@ -2,7 +2,7 @@ import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:todo_list/models/todo.dart';
 
-// To-do Model.
+// To-do List ViewModel.
 class TodoList extends ChangeNotifier {
   final List<Todo> _todos = [
     Todo(name: "Shopping", description: "Pick up groceries"),
