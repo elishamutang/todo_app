@@ -14,7 +14,12 @@ class Todo {
   late bool complete;
 
   // Constructor
-  Todo({ required this.id, required this.name, required this.description, this.complete = false });
+  Todo({
+    required this.id,
+    required this.name,
+    required this.description,
+    this.complete = false,
+  });
 
   @override
   String toString() {
@@ -46,7 +51,7 @@ class Todo {
       description: map['description'],
       complete: map['complete'],
     );
-  } 
+  }
 }
 
 // Serializes (writes) and de-serializes (reads) Todo instances.

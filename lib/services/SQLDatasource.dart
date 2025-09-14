@@ -12,9 +12,9 @@ class SQLDatasource implements IDataSource {
       version: 1,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE IF NOT EXISTS todo (id INTEGER PRIMARY KEY, name TEXT, description TEXT, complete INTEGER)'
+          'CREATE TABLE IF NOT EXISTS todo (id INTEGER PRIMARY KEY, name TEXT, description TEXT, complete INTEGER)',
         );
-      }
+      },
     );
   }
 
@@ -32,12 +32,9 @@ class SQLDatasource implements IDataSource {
 
     List<Map<String, dynamic>> todos = await _database.query('todos');
 
-    return List.generate(
-      todos.length,
-      (index) {
-        return Todo.fromMap(todos[index]);
-      }
-    );
+    return List.generate(todos.length, (index) {
+      return Todo.fromMap(todos[index]);
+    });
   }
 
   // Add new todo
@@ -45,14 +42,14 @@ class SQLDatasource implements IDataSource {
   Future<bool> add(Todo todo) async {
     try {
       await initialise();
-      
+
       // Remove ID field in todoMap because ID will be created automatically by SQLite.
       Map<String, dynamic> todoMap = todo.toMap();
       todoMap['id'].remove();
 
       final int newTodos = await _database.insert('todos', todoMap);
       return newTodos > 0;
-    } catch(e) {
+    } catch (e) {
       print('Adding todo failed: $e');
       return false;
     }
@@ -64,9 +61,13 @@ class SQLDatasource implements IDataSource {
     try {
       await initialise();
 
-      final int deletedTodos = await _database.delete('todos', where: 'id = ?', whereArgs: [todo.id]);
+      final int deletedTodos = await _database.delete(
+        'todos',
+        where: 'id = ?',
+        whereArgs: [todo.id],
+      );
       return deletedTodos > 0;
-    } catch(e) {
+    } catch (e) {
       print('Delete failed: $e');
       return false;
     }
@@ -78,9 +79,13 @@ class SQLDatasource implements IDataSource {
     try {
       await initialise();
 
-      List<Map<String, dynamic>> chosenTodo = await _database.query('todos', where: 'id = ?', whereArgs: [id]);
+      List<Map<String, dynamic>> chosenTodo = await _database.query(
+        'todos',
+        where: 'id = ?',
+        whereArgs: [id],
+      );
       return Todo.fromMap(chosenTodo[0]);
-    } catch(e) {
+    } catch (e) {
       print('Read failed: $e');
       return null;
     }
@@ -94,7 +99,7 @@ class SQLDatasource implements IDataSource {
 
       final int editedTodos = await _database.update('todos', todo.toMap());
       return editedTodos > 0;
-    } catch(e) {
+    } catch (e) {
       print('Edit failed: $e');
       return false;
     }
@@ -108,9 +113,9 @@ class SQLDatasource implements IDataSource {
 
       final int deletedTodos = await _database.delete('todos');
       return deletedTodos > 0;
-    } catch(e) {
+    } catch (e) {
       print('Clear failed: $e');
       return false;
     }
-  }  
+  }
 }

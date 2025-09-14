@@ -9,10 +9,12 @@ import 'package:get/get.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Get.putAsync<IDataSource>(() => SQLDatasource.createAsync()).whenComplete(
-    () => runApp(ChangeNotifierProvider(
-      create: (context) => TodoList(),
-      child: const ToDoApp(),
-    ))
+    () => runApp(
+      ChangeNotifierProvider(
+        create: (context) => TodoList(),
+        child: const ToDoApp(),
+      ),
+    ),
   );
 }
 
@@ -21,10 +23,7 @@ class ToDoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const ToDoHomePage(),
-      title: "To-Do App",
-    );
+    return MaterialApp(home: const ToDoHomePage(), title: "To-Do App");
   }
 }
 
@@ -40,59 +39,49 @@ class _ToDoHomePageState extends State<ToDoHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actionsIconTheme: IconThemeData(
-          color: Colors.white,
-        ),
+        actionsIconTheme: IconThemeData(color: Colors.white),
         actions: [
           // Consumer widget listens for UI updates, in this case the change in number of incomplete todos.
-          Consumer<TodoList>(builder: (context, model, child) {
-            return Text(
-              'Not completed: ${model.todos.where((t) => t.complete == false).length}',
-              style: TextStyle(
-                color: Colors.white,
-              ),
-            );
-          }),
+          Consumer<TodoList>(
+            builder: (context, model, child) {
+              return Text(
+                'Not completed: ${model.todos.where((t) => t.complete == false).length}',
+                style: TextStyle(color: Colors.white),
+              );
+            },
+          ),
           SizedBox(width: 10),
           Icon(Icons.menu),
-          SizedBox(width: 10)
+          SizedBox(width: 10),
         ],
         backgroundColor: Colors.blueAccent,
         title: Text(
           "To-Do App",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
       body: Center(
-        child: Consumer<TodoList>(builder: (context, model, child) {
-          return RefreshIndicator(
-            onRefresh: model.refresh,
-            child: ListView.builder(
-              itemCount: model.todoCount,
-              itemBuilder: (context, index) {
-                return TodoWidget(todo: model.todos[index]);
-              },
-            ),
-          );
-        }),
+        child: Consumer<TodoList>(
+          builder: (context, model, child) {
+            return RefreshIndicator(
+              onRefresh: model.refresh,
+              child: ListView.builder(
+                itemCount: model.todoCount,
+                itemBuilder: (context, index) {
+                  return TodoWidget(todo: model.todos[index]);
+                },
+              ),
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blueAccent,
         onPressed: () {
           // Open new window to add new To-Do here.
         },
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }
 }
-
-
-
-
