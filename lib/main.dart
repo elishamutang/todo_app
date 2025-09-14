@@ -79,6 +79,16 @@ class _ToDoHomePageState extends State<ToDoHomePage> {
           );
         }),
       ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blueAccent,
+        onPressed: () {
+          // Open new window to add new To-Do here.
+        },
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),
     );
   }
 }
