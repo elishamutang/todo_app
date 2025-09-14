@@ -6,11 +6,7 @@ import 'package:get/get.dart';
 
 // To-do List ViewModel.
 class TodoList extends ChangeNotifier {
-  final List<Todo> _todos = [
-    Todo(id: "1", name: "Shopping", description: "Pick up groceries"),
-    Todo(id: "2", name: "Paint", description: "Recreate the Mona Lisa"),
-    Todo(id: "3", name: "Dance", description: "I wanna dance with somebody")
-  ];
+  final List<Todo> _todos = [];
 
   UnmodifiableListView<Todo> get todos => UnmodifiableListView(_todos);
   int get todoCount => _todos.length;
