@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 
 // To-do model.
+// Hive annotations defines the structure for Hive's storage format.
 @HiveType(typeId: 0)
 class Todo {
   @HiveField(0)
@@ -48,6 +49,7 @@ class Todo {
   } 
 }
 
+// Serializes (writes) and de-serializes (reads) Todo instances.
 class TodoAdapter extends TypeAdapter<Todo> {
   @override
   Todo read(BinaryReader reader) {
