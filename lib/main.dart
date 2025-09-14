@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list/models/todo_list.dart';
+import 'package:todo_list/services/SQLDatasource.dart';
+import 'package:todo_list/services/todo_datasource.dart';
 import 'package:todo_list/views/todo_widget.dart';
+import 'package:get/get.dart';
 
 void main() {
-  runApp(ChangeNotifierProvider(
-    create: (context) => TodoList(),
-    child: const ToDoApp(),
-  ));
+  WidgetsFlutterBinding.ensureInitialized();
+  Get.putAsync<IDataSource>(() => SQLDatasource.createAsync()).whenComplete(
+    () => runApp(ChangeNotifierProvider(
+      create: (context) => TodoList(),
+      child: const ToDoApp(),
+    ))
+  );
 }
 
 class ToDoApp extends StatelessWidget {
@@ -62,11 +68,14 @@ class _ToDoHomePageState extends State<ToDoHomePage> {
       ),
       body: Center(
         child: Consumer<TodoList>(builder: (context, model, child) {
-          return ListView.builder(
-            itemCount: model.todoCount,
-            itemBuilder: (context, index) {
-              return TodoWidget(todo: model.todos[index]);
-            },
+          return RefreshIndicator(
+            onRefresh: model.refresh,
+            child: ListView.builder(
+              itemCount: model.todoCount,
+              itemBuilder: (context, index) {
+                return TodoWidget(todo: model.todos[index]);
+              },
+            ),
           );
         }),
       ),
