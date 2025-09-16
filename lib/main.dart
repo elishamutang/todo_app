@@ -5,10 +5,12 @@ import 'package:todo_list/services/SQLDatasource.dart';
 import 'package:todo_list/services/todo_datasource.dart';
 import 'package:todo_list/views/todo_widget.dart';
 import 'package:get/get.dart';
+import 'package:todo_list/services/hive_datasource.dart';
+import 'package:todo_list/models/todo.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  Get.putAsync<IDataSource>(() => SQLDatasource.createAsync()).whenComplete(
+  Get.putAsync<IDataSource>(() => HiveDatasource.createAsync()).whenComplete(
     () => runApp(
       ChangeNotifierProvider(
         create: (context) => TodoList(),
@@ -35,6 +37,9 @@ class ToDoHomePage extends StatefulWidget {
 }
 
 class _ToDoHomePageState extends State<ToDoHomePage> {
+  final TextEditingController _controlName = TextEditingController();
+  final TextEditingController _controlDescription = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,11 +82,60 @@ class _ToDoHomePageState extends State<ToDoHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blueAccent,
-        onPressed: () {
-          // Open new window to add new To-Do here.
-        },
+        onPressed: _openAddTodo,
+        tooltip: 'Add new to-do',
         child: Icon(Icons.add, color: Colors.white),
       ),
+    );
+  }
+
+  void _openAddTodo() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Add New Todo',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(5, 8, 5, 0),
+                child: Text("Name"),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(5, 0, 5, 8),
+                child: TextFormField(controller: _controlName),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(5, 8, 5, 0),
+                child: Text("Description"),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(5, 0, 5, 8),
+                child: TextFormField(controller: _controlDescription),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    Provider.of<TodoList>(context, listen: false).add(
+                      Todo(
+                        id: "0",
+                        name: _controlName.text,
+                        description: _controlDescription.text,
+                      ),
+                    ); // Updates shared TodoList model.
+                    Navigator.pop(context);
+                  });
+                },
+                child: Text('Submit'),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

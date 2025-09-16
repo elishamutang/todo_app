@@ -26,6 +26,20 @@ class Todo {
     return "$name - ($description)";
   }
 
+  Todo copyWith({
+    String? id,
+    String? name,
+    String? description,
+    bool? complete,
+  }) {
+    return Todo(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      complete: complete ?? this.complete,
+    );
+  }
+
   // Converts the model to Map<String, dynamic> that can map to SQL key-value pair.
   Map<String, dynamic> toMap() {
     return {
