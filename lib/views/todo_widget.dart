@@ -14,8 +14,17 @@ class TodoWidget extends StatefulWidget {
 class _TodoWidgetState extends State<TodoWidget> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(5),
+    return Dismissible(
+      direction: DismissDirection.startToEnd,
+      background: Container(
+        color: Colors.red,
+        alignment: Alignment.center,
+        child: Icon(Icons.delete),
+      ),
+      key: UniqueKey(),
+      onDismissed: (direction) {
+        Provider.of<TodoList>(context, listen: false).remove(widget.todo);
+      },
       child: Card(
         child: Padding(
           padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
@@ -28,10 +37,9 @@ class _TodoWidgetState extends State<TodoWidget> {
                   setState(() {
                     widget.todo.complete = value!;
                   });
-                  Provider.of<TodoList>(
-                    context,
-                    listen: false,
-                  ).updateTodo(widget.todo); // Updates shared TodoList model.
+                  Provider.of<TodoList>(context, listen: false).updateTodo(
+                    widget.todo.copyWith(complete: value),
+                  ); // Updates shared TodoList model.
                 },
               ),
             ],
