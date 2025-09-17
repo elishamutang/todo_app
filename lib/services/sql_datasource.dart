@@ -9,10 +9,10 @@ class SQLDatasource implements IDataSource {
   Future initialise() async {
     _database = await openDatabase(
       join(await getDatabasesPath(), 'todo_data.db'),
-      version: 1,
+      version: 5,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE IF NOT EXISTS todo (id INTEGER PRIMARY KEY, name TEXT, description TEXT, complete INTEGER)',
+          'CREATE TABLE IF NOT EXISTS todos (id INTEGER PRIMARY KEY, name TEXT, description TEXT, complete INTEGER)',
         );
       },
     );
@@ -45,7 +45,8 @@ class SQLDatasource implements IDataSource {
 
       // Remove ID field in todoMap because ID will be created automatically by SQLite.
       Map<String, dynamic> todoMap = todo.toMap();
-      todoMap['id'].remove();
+      todoMap.remove('id');
+      todoMap['complete'] = todoMap['complete'] == true ? 1 : 0;
 
       final int newTodos = await _database.insert('todos', todoMap);
       return newTodos > 0;
@@ -97,7 +98,15 @@ class SQLDatasource implements IDataSource {
     try {
       await initialise();
 
-      final int editedTodos = await _database.update('todos', todo.toMap());
+      Map<String, dynamic> todoMap = todo.toMap();
+      todoMap['complete'] = todoMap['complete'] == true ? 1 : 0;
+
+      final int editedTodos = await _database.update(
+        'todos',
+        todoMap,
+        where: 'id = ?',
+        whereArgs: [todoMap['id']],
+      );
       return editedTodos > 0;
     } catch (e) {
       print('Edit failed: $e');
