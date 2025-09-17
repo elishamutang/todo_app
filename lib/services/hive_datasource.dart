@@ -58,7 +58,8 @@ class HiveDatasource implements IDataSource {
   // Clear all data
   @override
   Future<bool> clear() async {
-    Hive.box('todos').clear();
+    Box<Todo> box = Hive.box('todos');
+    box.clear();
     return true;
   }
 }
