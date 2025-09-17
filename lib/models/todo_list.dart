@@ -57,4 +57,16 @@ class TodoList extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // Clear all todos
+  void removeAll() async {
+    IDataSource datasource = Get.find();
+
+    bool removedTodos = await datasource.clear();
+
+    if (removedTodos) {
+      _todos.clear();
+      notifyListeners();
+    }
+  }
 }
