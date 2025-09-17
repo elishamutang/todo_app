@@ -14,17 +14,6 @@ class TodoWidget extends StatefulWidget {
 class _TodoWidgetState extends State<TodoWidget> {
   final _formKey = GlobalKey<FormState>();
 
-  late final TextEditingController _controlName;
-  late final TextEditingController _controlDescription;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controlName = TextEditingController(text: widget.todo.name);
-    _controlDescription = TextEditingController(text: widget.todo.description);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Dismissible(
@@ -104,6 +93,14 @@ class _TodoWidgetState extends State<TodoWidget> {
     showDialog(
       context: context,
       builder: (context) {
+        final TextEditingController controlName = TextEditingController(
+          text: widget.todo.name,
+        );
+
+        final TextEditingController controlDescription = TextEditingController(
+          text: widget.todo.description,
+        );
+
         return AlertDialog(
           actions: [
             Center(
@@ -117,15 +114,15 @@ class _TodoWidgetState extends State<TodoWidget> {
                       todoModel.updateTodo(
                         Todo(
                           id: widget.todo.id,
-                          name: _controlName.text,
-                          description: _controlDescription.text,
+                          name: controlName.text,
+                          description: controlDescription.text,
                         ),
                       );
 
                       // Update UI
                       setState(() {
-                        widget.todo.name = _controlName.text;
-                        widget.todo.description = _controlDescription.text;
+                        widget.todo.name = controlName.text;
+                        widget.todo.description = controlDescription.text;
                       });
 
                       Navigator.pop(context);
@@ -153,7 +150,7 @@ class _TodoWidgetState extends State<TodoWidget> {
                       decoration: const InputDecoration(
                         labelText: "Name of todo",
                       ),
-                      controller: _controlName,
+                      controller: controlName,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return "Please enter a todo name.";
@@ -169,7 +166,7 @@ class _TodoWidgetState extends State<TodoWidget> {
                       decoration: const InputDecoration(
                         labelText: "Description of todo",
                       ),
-                      controller: _controlDescription,
+                      controller: controlDescription,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return "Please enter a description.";
