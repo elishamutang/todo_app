@@ -12,6 +12,19 @@ class TodoWidget extends StatefulWidget {
 }
 
 class _TodoWidgetState extends State<TodoWidget> {
+  final _formKey = GlobalKey<FormState>();
+
+  late final TextEditingController _controlName;
+  late final TextEditingController _controlDescription;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controlName = TextEditingController(text: widget.todo.name);
+    _controlDescription = TextEditingController(text: widget.todo.description);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dismissible(
@@ -19,7 +32,7 @@ class _TodoWidgetState extends State<TodoWidget> {
       background: Container(
         color: Colors.red,
         alignment: Alignment.center,
-        child: Icon(Icons.delete),
+        child: Icon(Icons.delete, color: Colors.white),
       ),
       key: UniqueKey(),
       onDismissed: (direction) {
@@ -59,6 +72,10 @@ class _TodoWidgetState extends State<TodoWidget> {
                   ],
                 ),
               ),
+              TextButton(
+                onPressed: widget.todo.complete ? null : _updateTodo,
+                child: Text('Edit'),
+              ),
               Checkbox(
                 activeColor: Colors.blueAccent,
                 value: widget.todo.complete,
@@ -75,6 +92,94 @@ class _TodoWidgetState extends State<TodoWidget> {
           ),
         ),
       ),
+    );
+  }
+
+  void _updateTodo() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          actions: [
+            Center(
+              child: Consumer<TodoList>(
+                builder: (context, todoModel, child) {
+                  return ElevatedButton(
+                    onPressed: () {
+                      if (!_formKey.currentState!.validate()) return;
+
+                      // Update shared model
+                      todoModel.updateTodo(
+                        Todo(
+                          id: widget.todo.id,
+                          name: _controlName.text,
+                          description: _controlDescription.text,
+                        ),
+                      );
+
+                      // Update UI
+                      setState(() {
+                        widget.todo.name = _controlName.text;
+                        widget.todo.description = _controlDescription.text;
+                      });
+
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Update'),
+                  );
+                },
+              ),
+            ),
+          ],
+          content: Container(
+            padding: const EdgeInsets.all(3),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Edit Todo',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(5, 0, 5, 8),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: "Name of todo",
+                      ),
+                      controller: _controlName,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please enter a todo name.";
+                        }
+
+                        return null;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(5, 0, 5, 8),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: "Description of todo",
+                      ),
+                      controller: _controlDescription,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please enter a description.";
+                        }
+
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
