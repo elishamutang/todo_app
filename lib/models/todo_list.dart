@@ -14,7 +14,7 @@ class TodoList extends ChangeNotifier {
   // Refresh todos
   Future<List<Todo>> refresh() async {
     IDataSource datasource = Get.find();
-    removeAll();
+    _todos.clear();
 
     _todos.addAll(await datasource.browse());
     notifyListeners();
@@ -29,18 +29,6 @@ class TodoList extends ChangeNotifier {
 
     if (todoAdded) {
       _todos.add(todo);
-      notifyListeners();
-    }
-  }
-
-  // Remove all to-dos
-  void removeAll() async {
-    IDataSource datasource = Get.find();
-
-    bool clearTodos = await datasource.clear();
-
-    if (clearTodos) {
-      _todos.clear();
       notifyListeners();
     }
   }
