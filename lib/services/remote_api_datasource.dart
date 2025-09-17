@@ -58,7 +58,7 @@ class RemoteApiDatasource implements IDataSource {
     todo.id = newTodoRef.key as String;
 
     final bool result = await newTodoRef
-        .set(todo)
+        .set(todo.toMap())
         .then((_) {
           print("Todo added succesfully");
           return true;
@@ -109,7 +109,7 @@ class RemoteApiDatasource implements IDataSource {
     DatabaseReference todoRef = database.ref('todos/${todo.id}');
 
     try {
-      await todoRef.set(todo);
+      await todoRef.set(todo.toMap());
       return true;
     } catch (e) {
       print('Update failed: $e');
