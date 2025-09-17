@@ -21,6 +21,7 @@ class HiveDatasource implements IDataSource {
   @override
   Future<List<Todo>> browse() async {
     Box<Todo> box = Hive.box('todos');
+    print(box.values.toList());
     return box.values.toList();
   }
 
