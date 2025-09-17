@@ -30,8 +30,37 @@ class _TodoWidgetState extends State<TodoWidget> {
           padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
           child: Row(
             children: [
-              Text(widget.todo.toString()),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.todo.name,
+                      style: TextStyle(
+                        decoration: widget.todo.complete
+                            ? TextDecoration.lineThrough
+                            : null,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: widget.todo.complete
+                            ? Colors.grey
+                            : Colors.black,
+                      ),
+                    ),
+                    Text(
+                      widget.todo.description,
+                      style: TextStyle(
+                        decoration: widget.todo.complete
+                            ? TextDecoration.lineThrough
+                            : null,
+                        color: widget.todo.complete ? Colors.grey : null,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Checkbox(
+                activeColor: Colors.blueAccent,
                 value: widget.todo.complete,
                 onChanged: (bool? value) {
                   setState(() {
