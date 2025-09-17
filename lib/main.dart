@@ -57,6 +57,17 @@ class _ToDoHomePageState extends State<ToDoHomePage> {
       appBar: AppBar(
         actionsIconTheme: IconThemeData(color: Colors.white),
         actions: [
+          IconButton(
+            padding: EdgeInsets.all(4),
+            constraints: BoxConstraints(),
+            style: ButtonStyle(
+              backgroundColor: WidgetStatePropertyAll(Colors.redAccent),
+            ),
+            onPressed: () {
+              Provider.of<TodoList>(context, listen: false).removeAll();
+            },
+            icon: Icon(Icons.delete_forever, color: Colors.white),
+          ),
           // Consumer widget listens for UI updates, in this case the change in number of incomplete todos.
           Consumer<TodoList>(
             builder: (context, model, child) {
@@ -66,9 +77,7 @@ class _ToDoHomePageState extends State<ToDoHomePage> {
               );
             },
           ),
-          SizedBox(width: 10),
-          Icon(Icons.menu),
-          SizedBox(width: 10),
+          SizedBox(width: 15),
         ],
         backgroundColor: Colors.blueAccent,
         title: Text(
