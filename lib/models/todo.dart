@@ -63,7 +63,7 @@ class Todo {
       id: map['id'].toString(),
       name: map['name'],
       description: map['description'],
-      complete: map['complete'],
+      complete: complete,
     );
   }
 }
