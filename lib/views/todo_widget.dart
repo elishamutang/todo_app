@@ -74,7 +74,12 @@ class _TodoWidgetState extends State<TodoWidget> {
               ),
               TextButton(
                 onPressed: widget.todo.complete ? null : _updateTodo,
-                child: Text('Edit'),
+                child: Text(
+                  'Edit',
+                  style: TextStyle(
+                    color: widget.todo.complete ? Colors.grey : Colors.blue,
+                  ),
+                ),
               ),
               Checkbox(
                 activeColor: Colors.blueAccent,
