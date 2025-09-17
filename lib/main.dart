@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list/models/todo_list.dart';
 import 'package:todo_list/services/SQLDatasource.dart';
+import 'package:todo_list/services/remote_api_datasource.dart';
 import 'package:todo_list/services/todo_datasource.dart';
 import 'package:todo_list/views/todo_widget.dart';
 import 'package:get/get.dart';
@@ -37,8 +38,18 @@ class ToDoHomePage extends StatefulWidget {
 }
 
 class _ToDoHomePageState extends State<ToDoHomePage> {
+  final _formKey = GlobalKey<FormState>();
+
+  // Form fields
   final TextEditingController _controlName = TextEditingController();
   final TextEditingController _controlDescription = TextEditingController();
+
+  // Load todos from DB on mount.
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<TodoList>(context, listen: false).refresh();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,45 +105,78 @@ class _ToDoHomePageState extends State<ToDoHomePage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Add New Todo',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(5, 8, 5, 0),
-                child: Text("Name"),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(5, 0, 5, 8),
-                child: TextFormField(controller: _controlName),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(5, 8, 5, 0),
-                child: Text("Description"),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(5, 0, 5, 8),
-                child: TextFormField(controller: _controlDescription),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    Provider.of<TodoList>(context, listen: false).add(
-                      Todo(
-                        id: "0",
-                        name: _controlName.text,
-                        description: _controlDescription.text,
-                      ),
-                    ); // Updates shared TodoList model.
-                    Navigator.pop(context);
-                  });
+          actions: [
+            Center(
+              child: Consumer<TodoList>(
+                builder: (context, todoModel, child) {
+                  return ElevatedButton(
+                    onPressed: () {
+                      if (!_formKey.currentState!.validate()) return;
+
+                      todoModel.add(
+                        Todo(
+                          id: UniqueKey().toString(),
+                          name: _controlName.text,
+                          description: _controlDescription.text,
+                        ),
+                      );
+
+                      _controlName.clear();
+                      _controlDescription.clear();
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Add'),
+                  );
                 },
-                child: Text('Submit'),
               ),
-            ],
+            ),
+          ],
+          content: Container(
+            padding: const EdgeInsets.all(3),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Add New Todo',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(5, 0, 5, 8),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: "Name of todo",
+                      ),
+                      controller: _controlName,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please enter a todo name.";
+                        }
+
+                        return null;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(5, 0, 5, 8),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: "Description of todo",
+                      ),
+                      controller: _controlDescription,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please enter a description.";
+                        }
+
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         );
       },
