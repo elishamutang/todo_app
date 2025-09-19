@@ -1,16 +1,7 @@
-# todo_list
+# To-do App
 
-To-do App
+This is a simple To-do App written in Dart / Flutter for cross-platform devices.
 
-## Getting Started
+# How it works
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The app provides simple and intuitive Create, Read, Update, Delete functionalities where the user's todos are primarily stored in a NoSQL key-value database called Hive (other database options like local SQL database and Firebase are also available).
